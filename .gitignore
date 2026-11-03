@@ -1,0 +1,22 @@
+# Firma del APK: nunca se sube a git.
+/signing/
+*.jks
+*.keystore
+keystore.properties
+
+# Android / Gradle
+.gradle/
+.kotlin/
+build/
+local.properties
+*.apk
+*.aab
+.idea/
+*.iml
+captures/
+
+# Node
+node_modules/
+
+Thumbs.db
+.vscode/

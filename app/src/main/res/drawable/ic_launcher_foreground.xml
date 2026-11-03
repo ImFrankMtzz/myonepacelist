@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <!-- track -->
+    <path android:pathData="M54,32a22,22 0,1 1,0 44a22,22 0,1 1,0 -44"
+        android:strokeColor="#2A3140" android:strokeWidth="7" android:fillColor="#00000000" />
+    <!-- 3/4 progress arc starting at 12 o'clock, clockwise -->
+    <path android:pathData="M54,32A22,22 0,1 1,32 54"
+        android:strokeColor="@color/brand_amber" android:strokeWidth="7"
+        android:strokeLineCap="round" android:fillColor="#00000000" />
+    <!-- play triangle -->
+    <path android:pathData="M49,44.5L64,54L49,63.5Z" android:fillColor="#E8ECF1" />
+</vector>

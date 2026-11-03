@@ -1,0 +1,11 @@
+{
+  "name": "myonepacelist-catalog",
+  "private": true,
+  "type": "module",
+  "description": "Builds MyOnePaceList's catalog.json from onepace.net",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "test": "node --test",
+    "sync": "node src/sync.mjs ../../catalog.json ../../app/src/main/assets/catalog.json"
+  }
+}
