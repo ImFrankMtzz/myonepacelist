@@ -1,10 +1,10 @@
 name: Catálogo
 
-# Lee onepace.net una vez al día (no desde cada teléfono) y publica catalog.json si cambió.
-# La app descarga ese archivo desde raw.githubusercontent.com.
+# SOLO MANUAL. onepace.net (Cloudflare) responde 403 a las IP de GitHub Actions, así que el horario
+# diario se quitó: el catálogo lo actualiza tools/catalog/local-sync.ps1 desde una PC.
+# Se deja como botón por si algún día One Pace permite este tráfico (entonces basta volver a poner `schedule`).
+# Lee onepace.net, genera catalog.json y lo publica si cambió. La app lo descarga desde raw.githubusercontent.com.
 on:
-  schedule:
-    - cron: "23 7 * * *"
   workflow_dispatch:
 
 # Solo puede escribir en el repo (commit del catálogo). Acciones fijadas por SHA.

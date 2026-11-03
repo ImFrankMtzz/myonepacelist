@@ -38,11 +38,11 @@ Descarga el APK más reciente desde [Releases](../../releases) e instálalo en t
 ## Cómo se mantiene al día
 
 ```
-onepace.net ──(GitHub Action diaria)──> catalog.json en este repo ──(la app, 1 vez al día)──> tu teléfono
+onepace.net ──(script diario en una PC)──> catalog.json en este repo ──(la app, 1 vez al día)──> tu teléfono
 ```
 
 - `tools/catalog/` lee los datos de la página de One Pace (el payload de Next.js) y genera `catalog.json`: arcos, episodios, sinopsis y los IDs de Pixeldrain para subtítulos y doblaje en cada calidad.
-- `.github/workflows/catalog.yml` lo corre cada día y hace commit solo si algo cambió. Así onepace.net recibe una visita al día, no una por cada teléfono.
+- `tools/catalog/local-sync.ps1` lo corre cada día desde una PC y hace commit solo si algo cambió. Así onepace.net recibe una visita al día, no una por cada teléfono. No se hace con GitHub Actions porque onepace.net bloquea (403) sus direcciones; `.github/workflows/catalog.yml` queda como botón manual por si eso cambia.
 - La app trae una copia del catálogo, así que funciona sin internet, y descarga la versión nueva desde este repositorio.
 
 ## Seguridad y privacidad
