@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: ["catalog.json", "app/src/main/assets/catalog.json"]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Pruebas del catálogo
+        working-directory: tools/catalog
+        run: npm test
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Pruebas y APK debug
+        run: ./gradlew testDebugUnitTest assembleDebug lintDebug -PgithubUser=${{ github.repository_owner }}

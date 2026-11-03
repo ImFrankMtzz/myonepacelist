@@ -3,7 +3,7 @@ package com.myonepacelist.ui
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
+import androidx.core.net.toUri
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import com.myonepacelist.data.catalog.Language
@@ -17,9 +17,9 @@ fun Context.openInBrowser(url: String) {
         .setShowTitle(true)
         .build()
     try {
-        tab.launchUrl(this, Uri.parse(url))
+        tab.launchUrl(this, url.toUri())
     } catch (_: ActivityNotFoundException) {
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        startActivity(Intent(Intent.ACTION_VIEW, url.toUri()).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
     }
 }
 

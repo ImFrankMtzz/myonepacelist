@@ -59,7 +59,7 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
         .setMediaSourceFactory(
             DefaultMediaSourceFactory(
                 DefaultHttpDataSource.Factory()
-                    .setUserAgent("MyOnePaceList/1 (Android; +https://github.com)")
+                    .setUserAgent("MyOnePaceList/${com.myonepacelist.BuildConfig.VERSION_NAME} (Android)")
                     .setAllowCrossProtocolRedirects(true),
             ),
         )
