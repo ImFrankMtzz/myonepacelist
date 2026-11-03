@@ -40,6 +40,7 @@ import com.myonepacelist.domain.nextEpisode
 import com.myonepacelist.ui.UiState
 import com.myonepacelist.ui.components.ProgressBar
 import com.myonepacelist.ui.components.Thumb
+import com.myonepacelist.ui.components.episodesLabel
 import com.myonepacelist.ui.theme.Tokens
 
 private enum class ArcFilter(val label: String) { ALL("Todos"), PENDING("Pendientes"), DUB("Con doblaje") }
@@ -117,7 +118,7 @@ private fun ArcRow(arc: Arc, ui: UiState, current: Boolean, onClick: () -> Unit)
         current -> "En curso"
         ap.complete -> "Completado"
         arc.chapters.isNotBlank() -> "Cap. ${arc.chapters}"
-        else -> "${arc.episodes.size} episodios"
+        else -> episodesLabel(arc.episodes.size)
     } + " · " + when {
         arc.episodes.isEmpty() -> "Próximamente"
         dubCount == arc.episodes.size -> "Doblaje latino"

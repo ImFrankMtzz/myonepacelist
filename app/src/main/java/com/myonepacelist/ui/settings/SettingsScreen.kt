@@ -25,6 +25,7 @@ import androidx.compose.material.icons.rounded.Download
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.RestartAlt
 import androidx.compose.material.icons.rounded.Upload
+import androidx.compose.material.icons.rounded.Widgets
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -130,6 +131,20 @@ fun SettingsScreen(ui: UiState, vm: AppViewModel, contentPadding: PaddingValues,
             SwitchRow("Avisarme cuando haya episodios nuevos o doblaje nuevo", s.notifications, ::setNotifications)
         } }
 
+        item { Group("Pantalla de inicio") {
+            Text("Un widget con tu siguiente episodio, a un toque.", style = MaterialTheme.typography.bodySmall, color = Tokens.textMuted)
+            ActionRow(Icons.Rounded.Widgets, "Añadir widget a la pantalla de inicio") {
+                val mgr = android.appwidget.AppWidgetManager.getInstance(context)
+                if (mgr.isRequestPinAppWidgetSupported) {
+                    mgr.requestPinAppWidget(
+                        android.content.ComponentName(context, com.myonepacelist.widget.NextEpisodeWidgetReceiver::class.java), null, null,
+                    )
+                } else {
+                    vm.message("Mantén presionada la pantalla de inicio y elige Widgets › MyOnePaceList")
+                }
+            }
+        } }
+
         item { Group("Tu progreso") {
             Text(
                 "Tu progreso solo vive en este teléfono. Exporta un respaldo para no perderlo al cambiar de equipo.",
@@ -203,7 +218,10 @@ private fun SwitchRow(text: String, checked: Boolean, onChange: (Boolean) -> Uni
         Text(text, style = MaterialTheme.typography.bodyMedium, color = Tokens.text, modifier = Modifier.weight(1f).padding(end = 12.dp))
         Switch(
             checked = checked, onCheckedChange = null,
-            colors = SwitchDefaults.colors(checkedTrackColor = Tokens.accent, checkedThumbColor = Tokens.onAccent),
+            colors = SwitchDefaults.colors(
+                checkedTrackColor = Tokens.accent, checkedThumbColor = Tokens.onAccent,
+                uncheckedTrackColor = Tokens.surface2, uncheckedThumbColor = Tokens.textMuted, uncheckedBorderColor = Tokens.textMuted,
+            ),
         )
     }
 }

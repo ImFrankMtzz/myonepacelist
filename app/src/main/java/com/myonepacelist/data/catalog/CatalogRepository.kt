@@ -37,11 +37,13 @@ class CatalogRepository(
 
     /**
      * Downloads the remote catalog. Returns (previous, new) when it changed, null when unchanged.
-     * @throws java.io.IOException on network problems.
+     * Returns null as well when the remote file does not exist (e.g. the repo is not published yet).
+     * @throws java.io.IOException on network problems worth retrying.
      */
     suspend fun refresh(): Pair<Catalog, Catalog>? = withContext(Dispatchers.IO) {
         val previous = load()
         val body = http.newCall(Request.Builder().url(remoteUrl).build()).execute().use { res ->
+            if (res.code in 400..499) return@withContext null
             if (!res.isSuccessful) throw java.io.IOException("HTTP ${res.code}")
             res.body.string()
         }

@@ -20,7 +20,9 @@ android {
         buildConfigField(
             "String",
             "CATALOG_URL",
-            "\"https://raw.githubusercontent.com/${providers.gradleProperty("githubUser").get()}/MyOnePaceList/main/catalog.json\"",
+            "\"" + providers.gradleProperty("catalogUrl").getOrElse(
+                "https://raw.githubusercontent.com/${providers.gradleProperty("githubUser").get()}/MyOnePaceList/main/catalog.json",
+            ) + "\"",
         )
     }
 

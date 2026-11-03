@@ -71,12 +71,13 @@ class CatalogSyncWorker(context: Context, params: WorkerParameters) : CoroutineW
             )
             val first = diff.newEpisodes.firstOrNull() ?: diff.newDubs.first()
             val arc = catalog.arc(first.arc)?.title.orEmpty()
+            val alsoDub = if (diff.newEpisodes.isNotEmpty() && diff.newDubs.isNotEmpty()) " · y hay doblaje latino nuevo" else ""
             val (title, text) = when {
-                diff.newEpisodes.size == 1 && diff.newDubs.isEmpty() ->
-                    "Nuevo episodio: $arc ${first.number}" to first.title
+                diff.newEpisodes.size == 1 ->
+                    "Nuevo episodio: $arc ${first.number}" to first.title + alsoDub
                 diff.newEpisodes.isNotEmpty() ->
                     "${diff.newEpisodes.size} episodios nuevos de One Pace" to
-                        diff.newEpisodes.take(3).joinToString(" · ") { "${catalog.arc(it.arc)?.title} ${it.number}" }
+                        diff.newEpisodes.take(3).joinToString(" · ") { "${catalog.arc(it.arc)?.title} ${it.number}" } + alsoDub
                 diff.newDubs.size == 1 -> "Ya hay doblaje latino: $arc ${first.number}" to first.title
                 else -> "Doblaje latino nuevo en ${diff.newDubs.size} episodios" to
                     diff.newDubs.take(3).joinToString(" · ") { "${catalog.arc(it.arc)?.title} ${it.number}" }

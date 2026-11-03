@@ -32,6 +32,11 @@ class MainActivity : ComponentActivity() {
 
     private fun handle(intent: Intent?) {
         intent?.getStringExtra(EXTRA_EPISODE)?.let { openEpisode.trySend(it) }
+        // QA only: `adb shell am start -n <pkg>/com.myonepacelist.MainActivity --ez qa_sync true`
+        if (BuildConfig.DEBUG && intent?.getBooleanExtra("qa_sync", false) == true) {
+            androidx.work.WorkManager.getInstance(this)
+                .enqueue(androidx.work.OneTimeWorkRequestBuilder<com.myonepacelist.work.CatalogSyncWorker>().build())
+        }
     }
 
     companion object {

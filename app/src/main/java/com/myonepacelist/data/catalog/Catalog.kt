@@ -81,13 +81,16 @@ data class Episode(
     fun available(language: Language) = files(language) != null
     val hasSpanish: Boolean get() = sub != null || dub != null
 
-    /** Pixeldrain id for the wanted quality, falling back to the closest one available. */
-    fun fileId(language: Language, quality: Quality): String? {
-        val f = files(language) ?: return null
-        f[quality.key]?.let { return it }
-        return Quality.entries.sortedBy { kotlin.math.abs(it.ordinal - quality.ordinal) }
-            .firstNotNullOfOrNull { f[it.key] }
+    /** The quality that will actually play: [quality] if available, else the closest one (ties go lower). */
+    fun resolveQuality(language: Language, quality: Quality): Quality {
+        val f = files(language) ?: return quality
+        return Quality.entries
+            .sortedWith(compareBy({ kotlin.math.abs(it.ordinal - quality.ordinal) }, { it.ordinal }))
+            .firstOrNull { f.containsKey(it.key) } ?: quality
     }
+
+    /** Pixeldrain id for the wanted quality, falling back to the closest one available. */
+    fun fileId(language: Language, quality: Quality): String? = files(language)?.get(resolveQuality(language, quality).key)
 
     /** The first language available, preferring [preferred]. */
     fun resolveLanguage(preferred: Language): Language? =

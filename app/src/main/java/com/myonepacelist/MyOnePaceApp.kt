@@ -1,6 +1,13 @@
 package com.myonepacelist
 
 import android.app.Application
+import android.content.Context
+import coil3.ImageLoader
+import coil3.PlatformContext
+import coil3.SingletonImageLoader
+import coil3.network.okhttp.OkHttpNetworkFetcherFactory
+import coil3.request.crossfade
+import coil3.util.DebugLogger
 import com.myonepacelist.data.catalog.CatalogRepository
 import com.myonepacelist.data.progress.StateStore
 import kotlinx.coroutines.CoroutineScope
@@ -26,7 +33,7 @@ class AppContainer(app: Application) {
     val state = StateStore(app)
 }
 
-class MyOnePaceApp : Application() {
+class MyOnePaceApp : Application(), SingletonImageLoader.Factory {
     lateinit var container: AppContainer
         private set
 
@@ -42,7 +49,15 @@ class MyOnePaceApp : Application() {
                 .collect { NextEpisodeWidget.refresh(this@MyOnePaceApp) }
         }
     }
+
+    /** One image loader for the app, reusing the shared OkHttp client. */
+    override fun newImageLoader(context: PlatformContext): ImageLoader =
+        ImageLoader.Builder(context)
+            .components { add(OkHttpNetworkFetcherFactory(callFactory = { container.http })) }
+            .crossfade(true)
+            .apply { if (BuildConfig.DEBUG) logger(DebugLogger()) }
+            .build()
 }
 
-val android.content.Context.container: AppContainer
+val Context.container: AppContainer
     get() = (applicationContext as MyOnePaceApp).container

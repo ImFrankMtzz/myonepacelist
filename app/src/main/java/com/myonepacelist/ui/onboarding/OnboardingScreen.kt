@@ -54,6 +54,7 @@ import com.myonepacelist.data.catalog.Language
 import com.myonepacelist.ui.components.Segmented
 import com.myonepacelist.ui.components.Thumb
 import com.myonepacelist.ui.components.availabilityLabel
+import com.myonepacelist.ui.components.episodesLabel
 import com.myonepacelist.ui.components.label
 import com.myonepacelist.ui.theme.SpaceGrotesk
 import com.myonepacelist.ui.theme.Tokens
@@ -62,7 +63,7 @@ private enum class Step { WELCOME, ARC, EPISODE, LANGUAGE }
 
 /** First run: "¿Dónde te quedaste?" → arc → episode → preferred language. */
 @Composable
-fun OnboardingScreen(catalog: Catalog, onDone: (nextEpisodeId: String?, Language) -> Unit) {
+fun OnboardingScreen(catalog: Catalog, onRestore: () -> Unit, onDone: (nextEpisodeId: String?, Language) -> Unit) {
     var step by rememberSaveable { mutableStateOf(Step.WELCOME) }
     var arcSlug by rememberSaveable { mutableStateOf<String?>(null) }
     var episodeId by rememberSaveable { mutableStateOf<String?>(null) }
@@ -82,13 +83,14 @@ fun OnboardingScreen(catalog: Catalog, onDone: (nextEpisodeId: String?, Language
                 Step.WELCOME -> Welcome(
                     onFresh = { episodeId = null; step = Step.LANGUAGE },
                     onResume = { step = Step.ARC },
+                    onRestore = onRestore,
                 )
                 Step.ARC -> Picker(
                     title = "¿En qué arco vas?",
                     onBack = { step = Step.WELCOME },
                 ) {
                     items(catalog.arcs.filter { it.episodes.isNotEmpty() }, key = { it.slug }) { arc ->
-                        PickRow(arc.image, arc.title, "${arc.episodes.size} episodios") { arcSlug = arc.slug; step = Step.EPISODE }
+                        PickRow(arc.image, arc.title, episodesLabel(arc.episodes.size)) { arcSlug = arc.slug; step = Step.EPISODE }
                     }
                 }
                 Step.EPISODE -> {
@@ -111,6 +113,8 @@ fun OnboardingScreen(catalog: Catalog, onDone: (nextEpisodeId: String?, Language
                     Segmented(
                         Language.entries, language, { language = it }, { it.label },
                         icon = { if (it == Language.DUB) Icons.Rounded.Mic else Icons.Rounded.Subtitles },
+                        track = Tokens.surface2,
+                        selectedColor = Tokens.surface,
                     )
                     Spacer(Modifier.weight(1f))
                     Button(
@@ -126,8 +130,10 @@ fun OnboardingScreen(catalog: Catalog, onDone: (nextEpisodeId: String?, Language
 }
 
 @Composable
-private fun Welcome(onFresh: () -> Unit, onResume: () -> Unit) {
+private fun Welcome(onFresh: () -> Unit, onResume: () -> Unit, onRestore: () -> Unit) {
     Column(Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        Spacer(Modifier.weight(1f))
+        com.myonepacelist.ui.components.AppLogo(Modifier.size(120.dp).align(Alignment.CenterHorizontally))
         Spacer(Modifier.weight(1f))
         Text(
             buildAnnotatedString {
@@ -150,6 +156,9 @@ private fun Welcome(onFresh: () -> Unit, onResume: () -> Unit) {
         ) { Text("Ya voy en algún arco", style = MaterialTheme.typography.labelLarge) }
         OutlinedButton(onClick = onFresh, modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp), shape = RoundedCornerShape(16.dp)) {
             Text("Empiezo desde cero", style = MaterialTheme.typography.labelLarge, color = Tokens.text)
+        }
+        androidx.compose.material3.TextButton(onClick = onRestore, modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)) {
+            Text("Restaurar un respaldo", style = MaterialTheme.typography.labelMedium, color = Tokens.accent)
         }
     }
 }

@@ -74,8 +74,12 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
     init {
         player.addListener(object : Player.Listener {
             override fun onIsPlayingChanged(isPlaying: Boolean) {
-                _ui.update { it.copy(playing = isPlaying) }
                 if (!isPlaying) persist()
+            }
+
+            // The play/pause button reflects intent, so it doesn't flicker to "play" while buffering after a seek.
+            override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+                _ui.update { it.copy(playing = playWhenReady) }
             }
 
             override fun onPlaybackStateChanged(state: Int) {
@@ -122,7 +126,7 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
                 episode = ep,
                 arcTitle = catalog.arc(ep.arc)?.title.orEmpty(),
                 language = lang,
-                quality = quality,
+                quality = ep.resolveQuality(lang, quality),
                 resumedFromMs = resumeAt,
                 next = catalog.next(ep.id),
                 fallbackUrl = OnePaceLinks.pixeldrainViewer(fileId),
@@ -193,7 +197,7 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
         load(next.id, lang, _ui.value.quality)
     }
 
-    fun togglePlay() = if (player.isPlaying) player.pause() else {
+    fun togglePlay() = if (player.playWhenReady) player.pause() else {
         if (player.playbackState == Player.STATE_ENDED) player.seekTo(0)
         player.play()
     }

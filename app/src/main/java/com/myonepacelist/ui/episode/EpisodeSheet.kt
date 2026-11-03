@@ -109,12 +109,12 @@ fun EpisodeSheet(
                     SectionLabel("Calidad")
                     val available = ep.files(lang)?.keys.orEmpty()
                     Segmented(
-                        Quality.entries, quality, { quality = it }, { "${it.key}p" },
+                        Quality.entries, ep.resolveQuality(lang, quality), { quality = it }, { "${it.key}p" },
                         enabled = { it.key in available },
                     )
                 }
                 Button(
-                    onClick = { onPlay(ep, lang, quality) },
+                    onClick = { onPlay(ep, lang, ep.resolveQuality(lang, quality)) },
                     modifier = Modifier.fillMaxWidth().heightIn(min = 54.dp),
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Tokens.accent, contentColor = Tokens.onAccent),

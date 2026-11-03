@@ -105,6 +105,10 @@ class LibraryTest {
     @Test fun `fileId falls back to the closest quality and language resolves`() {
         val e = ep("a", 1)
         assertEquals("d7", e.fileId(Language.DUB, Quality.Q1080))
+        assertEquals(Quality.Q720, e.resolveQuality(Language.DUB, Quality.Q480))
+        assertEquals(Quality.Q1080, e.resolveQuality(Language.SUB, Quality.Q1080))
+        val only480 = e.copy(sub = mapOf("480" to "x"))
+        assertEquals(Quality.Q480, only480.resolveQuality(Language.SUB, Quality.Q1080))
         assertEquals("s1", e.fileId(Language.SUB, Quality.Q1080))
         val noDub = ep("b", 1, dub = false)
         assertNull(noDub.fileId(Language.DUB, Quality.Q720))

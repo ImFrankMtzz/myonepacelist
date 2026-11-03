@@ -69,12 +69,15 @@ fun <T> Segmented(
     modifier: Modifier = Modifier,
     enabled: (T) -> Boolean = { true },
     icon: ((T) -> ImageVector?)? = null,
+    /** Rail and selected-pill colors; the defaults suit controls placed on a card (surface). */
+    track: Color = Tokens.bg,
+    selectedColor: Color = Tokens.surface2,
 ) {
     Row(
         modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(14.dp))
-            .background(Tokens.bg)
+            .background(track)
             .padding(4.dp)
             .selectableGroup(),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -82,7 +85,7 @@ fun <T> Segmented(
         options.forEach { opt ->
             val on = opt == selected
             val ok = enabled(opt)
-            val bg by animateColorAsState(if (on) Tokens.surface2 else Color.Transparent, label = "seg")
+            val bg by animateColorAsState(if (on) selectedColor else Color.Transparent, label = "seg")
             Row(
                 Modifier
                     .weight(1f)
@@ -207,6 +210,34 @@ fun WatchCheck(watched: Boolean, inProgress: Boolean) {
         if (watched) Icon(Icons.Rounded.Check, null, tint = Tokens.onAccent, modifier = Modifier.size(18.dp))
     }
 }
+
+/** The launcher mark (3/4 progress ring + play), drawn with theme colors so it works in light and dark. */
+@Composable
+fun AppLogo(modifier: Modifier = Modifier) {
+    val track = Tokens.track
+    val accent = Tokens.accent
+    val fg = Tokens.text
+    androidx.compose.foundation.Canvas(modifier) {
+        val r = size.minDimension * 0.38f
+        val c = center
+        val stroke = androidx.compose.ui.graphics.drawscope.Stroke(width = r * 0.32f, cap = androidx.compose.ui.graphics.StrokeCap.Round)
+        val topLeft = androidx.compose.ui.geometry.Offset(c.x - r, c.y - r)
+        val arcSize = androidx.compose.ui.geometry.Size(r * 2, r * 2)
+        drawArc(track, 0f, 360f, false, topLeft, arcSize, style = stroke)
+        drawArc(accent, -90f, 270f, false, topLeft, arcSize, style = stroke)
+        val k = r / 22f
+        val play = androidx.compose.ui.graphics.Path().apply {
+            moveTo(c.x - 5 * k, c.y - 9.5f * k)
+            lineTo(c.x + 10 * k, c.y)
+            lineTo(c.x - 5 * k, c.y + 9.5f * k)
+            close()
+        }
+        drawPath(play, fg)
+    }
+}
+
+/** "1 episodio" / "4 episodios" */
+fun episodesLabel(n: Int) = if (n == 1) "1 episodio" else "$n episodios"
 
 /** 754000 -> "12:34", 4000000 -> "1:06:40" */
 fun formatClock(ms: Long): String {

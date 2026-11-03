@@ -17,6 +17,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -68,10 +69,24 @@ private val tabs = listOf(
 fun MainScreen(vm: AppViewModel, openEpisode: Flow<String>) {
     val ui by vm.ui.collectAsStateWithLifecycle()
     MyOnePaceTheme(ui.settings.theme) {
+        SystemBars(Tokens.isDark)
         val catalog = ui.catalog
         when {
             !ui.ready || catalog == null -> Box(Modifier.fillMaxSize())
-            !ui.app.onboarded -> OnboardingScreen(catalog) { next, lang -> vm.finishOnboarding(next, lang) }
+            !ui.app.onboarded -> {
+                val context = LocalContext.current
+                val restore = androidx.activity.compose.rememberLauncherForActivityResult(
+                    androidx.activity.result.contract.ActivityResultContracts.OpenDocument(),
+                ) { uri ->
+                    uri ?: return@rememberLauncherForActivityResult
+                    runCatching { context.contentResolver.openInputStream(uri)!!.use { it.readBytes().decodeToString() } }
+                        .onSuccess { vm.importBackup(it) }
+                }
+                OnboardingScreen(
+                    catalog,
+                    onRestore = { restore.launch(arrayOf("application/json", "text/plain", "application/octet-stream")) },
+                ) { next, lang -> vm.finishOnboarding(next, lang) }
+            }
             else -> AppScaffold(ui, vm, openEpisode)
         }
     }
@@ -168,6 +183,19 @@ private fun AppScaffold(ui: UiState, vm: AppViewModel, openEpisode: Flow<String>
             onOpenWeb = { ep, lang, _ -> openWeb(ep, lang) },
             onToggleWatched = { vm.toggleWatched(it.id) },
         )
+    }
+}
+
+/** Status/navigation bar icons follow the app theme, even when it differs from the system one. */
+@Composable
+private fun SystemBars(dark: Boolean) {
+    val activity = LocalContext.current as? androidx.activity.ComponentActivity ?: return
+    androidx.compose.runtime.DisposableEffect(dark) {
+        val transparent = android.graphics.Color.TRANSPARENT
+        val style = if (dark) androidx.activity.SystemBarStyle.dark(transparent)
+        else androidx.activity.SystemBarStyle.light(transparent, transparent)
+        activity.enableEdgeToEdge(statusBarStyle = style, navigationBarStyle = style)
+        onDispose { }
     }
 }
 

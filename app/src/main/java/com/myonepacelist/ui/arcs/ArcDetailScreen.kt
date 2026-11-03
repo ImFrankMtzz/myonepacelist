@@ -116,7 +116,7 @@ fun ArcDetailScreen(
                     Text("${ap.watched} de ${ap.total}", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold, color = Tokens.text)
                 }
                 if (arc.unreleased > 0) {
-                    Text("${arc.unreleased} episodios más en camino.", style = MaterialTheme.typography.bodySmall, color = Tokens.textMuted)
+                    Text(if (arc.unreleased == 1) "1 episodio más en camino." else "${arc.unreleased} episodios más en camino.", style = MaterialTheme.typography.bodySmall, color = Tokens.textMuted)
                 }
             }
         }
