@@ -1,6 +1,6 @@
 # HANDOFF — MyOnePaceList
 
-_Actualizado: 2026-11-03 (tarde)._
+_Actualizado: 2026-11-03 (noche)._
 
 ## Objetivo
 
@@ -35,20 +35,34 @@ Corregido: el catálogo remoto se sanea (`CatalogGuard`) y se limita a 5 MB; el 
 Sin hallazgos: secretos en el historial, claves en el repo, logs, WebView, componentes exportados de más, cleartext en release, PendingIntent mutables.
 Los commits usan el correo noreply de GitHub del usuario (el Gmail se reescribió antes del primer push).
 
-## Pendiente (requiere al usuario)
+## Publicado (2026-11-03)
 
-0. ✅ **Release v0.1.0 publicado** (https://github.com/ImFrankMtzz/myonepacelist/releases/tag/v0.1.0): APK firmado (cert SHA-256 `a4753e76…786f`, `CN=MyOnePaceList`) + `SHA256SUMS.txt`, verificados tras descargarlos. Secrets `SIGNING_*` cargados. La clave vive solo en `signing/` (fuera de git): guardar copia aparte.
-1. ✅ Usuario de GitHub: `githubUser=ImFrankMtzz`; repo público `github.com/ImFrankMtzz/myonepacelist` (en minúsculas, también en la URL del catálogo).
-2. ✅ Repo creado por el usuario y push hecho (2026-11-03).
-3. **Clave de firma para releases:** `keytool` (comando en el README), guardarla fuera del repo y cargar los 4 secrets (`SIGNING_*`). Luego subir la etiqueta `v0.1.0` (con confirmación).
-4. Tras el primer push: correr a mano el workflow **Catálogo** para comprobar que hace commit del `catalog.json`.
+- **Repo público:** https://github.com/ImFrankMtzz/myonepacelist (`githubUser=ImFrankMtzz`; el nombre va en minúsculas, también en la URL del catálogo). CI en verde.
+- **Release v0.1.0:** https://github.com/ImFrankMtzz/myonepacelist/releases/tag/v0.1.0. APK firmado (cert SHA-256 `a4753e76…786f`, `CN=MyOnePaceList`) + `SHA256SUMS.txt`, verificados tras descargarlos. Secrets `SIGNING_*` cargados en el repo.
+- **Clave de firma:** solo en `signing/` (fuera de git; verificado que nunca entró al historial ni al remoto). Si se pierde no hay actualizaciones que se instalen encima.
+- **LinkedIn:** post publicado con 4 capturas (inicio, ajustes, reproductor, arcos) y el enlace al repo.
+- **README** con galería de capturas (`docs/screenshots/`).
+
+## Pendiente
+
+1. **Copiar `signing/` a un lugar seguro** (USB / gestor de contraseñas). Lo único irrecuperable.
+2. Correr a mano el workflow **Catálogo** (pestaña Actions) para comprobar que hace su commit diario: aún no se probó en GitHub.
+3. **Difusión en comunidades en español** (aplazado por el usuario). Lo que se averiguó:
+   - Reddit está **bloqueado** para el navegador de Claude (ni `navigate` ni `WebFetch`): el usuario publica a mano y Claude prepara el texto con las reglas que pegue.
+   - r/onepace (en inglés) permite apps alternativas solo si son de código abierto y sus releases las compila un pipeline público: **la app cumple** (MIT + GitHub Actions + `SHA256SUMS.txt`). No enlazar sitios no oficiales (rentry, buymeacoffee…); título sin spoilers; las capturas de inicio y reproductor muestran Isla de Drum y a Vivi, mejor usar ajustes y arcos. El texto de las reglas que pegó el usuario salía cortado a mitad de la regla 7: faltaba el final y quizá más reglas.
+   - Esa comunidad es en inglés y el catálogo solo trae español latino: el post tendría que aclararlo en la primera línea (borrador bilingüe en la conversación; si se retoma, rehacerlo).
+   - Cuentas nuevas: muchas comunidades las filtran por karma/antigüedad; empezar comentando y no repetir el mismo post en varias a la vez.
+4. Opcional: *attestation* de procedencia en `release.yml` (`actions/attest-build-provenance`) y un `v0.1.1`, para reforzar "cada build rastreable al código". Solo con confirmación.
+5. Opcional: *topics* de GitHub (`one-piece`, `onepace`, `android`, `kotlin`) con `gh` (ya inició sesión como ImFrankMtzz).
 
 ## Estado del teléfono
 
-- Instalado `com.myonepacelist.debug` con **progreso de prueba** (Arlong Park, siguiente: 07). El usuario puede borrarlo en Ajustes.
-- `/sdcard/Download/myonepacelist-2026-11-03.json`: respaldo de ese progreso de prueba.
+- Instalado `com.myonepacelist.debug` con el **progreso real del usuario** (Isla de Drum 02, ~24 min) y los ajustes que él eligió (incluye "No reproducir con datos móviles" activado). No restaurar respaldos viejos encima: avanzó entre pruebas.
+- `/sdcard/Download/myonepacelist-2026-11-03.json`: respaldo viejo de progreso de prueba; se puede borrar.
+- El Release v0.1.0 (`com.myonepacelist`, sin `.debug`) **no está instalado** en el teléfono; sería un paquete aparte.
 - Widget en una página nueva de la pantalla de inicio (a la derecha de la página de widgets).
 - `stay_on_while_plugged_in = 2` (pedido por el usuario; se queda así).
+- La carpeta de pruebas de adb (`scratchpad`) tiene respaldos del estado; no están en el repo.
 
 ## Ideas para después (no comprometidas)
 

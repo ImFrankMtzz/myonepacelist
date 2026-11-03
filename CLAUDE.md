@@ -56,6 +56,8 @@ Sin Hilt ni Room a propósito: no hay KSP (frágil con Kotlin 2.4), el proyecto 
 
 ## Gotchas aprendidos
 
+- **Navegador de Claude (Brave):** Reddit está bloqueado ("not allowed due to safety restrictions") y no se rodea con espejos. LinkedIn sí funciona: el cuadro de publicar esconde el botón de foto si el texto tiene una URL (genera tarjeta de vista previa, y con `onepace.net` en el texto salía la tarjeta del sitio de One Pace): quitar la tarjeta con su X, luego "Foto" y `file_upload` al `input type=file` del Editor. Con la ventana chica la barra del cuadro se contrae: `resize_window` a ~1280×900. Después de publicar, LinkedIn ofrece promoción de pago: decir "No, gracias".
+- **Capturas del teléfono para el README o posts:** `adb exec-out screencap -p`, recortar 140 px arriba (barra de estado con hora e iconos de otras apps) y reducir a 720 px de ancho. No tomar la pantalla de inicio del usuario (widgets personales).
 - **Reproductor externo:** se lanza `ACTION_VIEW` (`video/mp4`) con extras de MX Player (`position` Int en ms, `return_result`, `title`). VLC también acepta `position` y devuelve `extra_position`/`extra_duration`; MX y mpv devuelven `position`/`duration`/`end_by`. Probado con VLC: arranca en el minuto guardado y lo devuelve al cerrar.
 - **Red medida:** se usa `NET_CAPABILITY_NOT_METERED` (y `TEMPORARILY_NOT_METERED`), no "es celular", así que un hotspot también cuenta como datos.
 - **Glance:** lo que va antes de `provideContent` solo corre al iniciar la sesión del widget. Lee el estado dentro de la composición (`collectAsState`/`produceState`). RemoteViews solo admite ciertas vistas: un `<View>` suelto rompe la vista previa (usa `ImageView`). Los bitmaps deben ser software (`allowHardware(false)`).
