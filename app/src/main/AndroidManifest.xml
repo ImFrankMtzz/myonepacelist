@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Saber si estás con datos móviles para el ajuste "No reproducir con datos". -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
@@ -23,6 +25,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Invisible: aplica los ajustes de reproducción y abre el reproductor de la app o uno externo. -->
+        <activity
+            android:name=".player.PlayLauncherActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.MyOnePaceList.Transparent" />
 
         <activity
             android:name=".player.PlayerActivity"

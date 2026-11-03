@@ -6,6 +6,7 @@ on:
   push:
     tags: ["v*"]
 
+# Necesario para crear el Release. Acciones fijadas por SHA porque este job maneja la clave de firma.
 permissions:
   contents: write
 
@@ -13,12 +14,17 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
           distribution: temurin
           java-version: 21
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
+        with:
+          # El APK firmado se compila desde cero, sin caché compartida con otros jobs.
+          cache-disabled: true
       - name: Preparar clave de firma
         env:
           KEYSTORE: ${{ secrets.SIGNING_KEYSTORE_BASE64 }}
@@ -31,10 +37,15 @@ jobs:
           SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
           SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          OWNER: ${{ github.repository_owner }}
         run: |
-          ./gradlew testDebugUnitTest assembleRelease -PgithubUser=${{ github.repository_owner }}
+          ./gradlew testDebugUnitTest assembleRelease "-PgithubUser=$OWNER"
           cp app/build/outputs/apk/release/app-release.apk "MyOnePaceList-${GITHUB_REF_NAME}.apk"
-      - uses: softprops/action-gh-release@v2
+          rm -f "$RUNNER_TEMP/release.jks"
+          sha256sum MyOnePaceList-*.apk > SHA256SUMS.txt
+      - uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:
-          files: MyOnePaceList-*.apk
+          files: |
+            MyOnePaceList-*.apk
+            SHA256SUMS.txt
           generate_release_notes: true

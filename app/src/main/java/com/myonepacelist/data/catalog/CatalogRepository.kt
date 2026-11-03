@@ -1,6 +1,7 @@
 package com.myonepacelist.data.catalog
 
 import android.content.Context
+import com.myonepacelist.domain.CatalogGuard
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -45,7 +46,10 @@ class CatalogRepository(
         val body = http.newCall(Request.Builder().url(remoteUrl).build()).execute().use { res ->
             if (res.code in 400..499) return@withContext null
             if (!res.isSuccessful) throw java.io.IOException("HTTP ${res.code}")
-            res.body.string()
+            // Today's catalog is ~320 KB: refuse anything absurdly large instead of loading it in memory.
+            val source = res.body.source()
+            if (source.request(MAX_BYTES + 1)) throw java.io.IOException("Catálogo remoto demasiado grande")
+            source.readUtf8()
         }
         val remote = decode(body) ?: throw java.io.IOException("Catálogo remoto inválido")
         if (remote.version == previous.version || remote.generatedAt < previous.generatedAt) return@withContext null
@@ -54,7 +58,12 @@ class CatalogRepository(
         previous to remote
     }
 
+    /** Parses and sanitizes a catalog (its values become URLs and intents, see [CatalogGuard]). */
     private fun decode(text: String): Catalog? = runCatching {
         json.decodeFromString(Catalog.serializer(), text)
-    }.getOrNull()?.takeIf { it.schema == Catalog.SCHEMA && it.arcs.isNotEmpty() }
+    }.getOrNull()?.takeIf { it.schema == Catalog.SCHEMA }?.let(CatalogGuard::sanitize)?.takeIf { it.arcs.isNotEmpty() }
+
+    private companion object {
+        const val MAX_BYTES = 5L * 1024 * 1024
+    }
 }

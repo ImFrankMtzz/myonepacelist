@@ -31,7 +31,7 @@ class PlayerActivity : ComponentActivity() {
         val episodeId = intent.getStringExtra(EXTRA_EPISODE) ?: return finish()
         val language = runCatching { Language.valueOf(intent.getStringExtra(EXTRA_LANGUAGE)!!) }.getOrDefault(Language.DUB)
         val quality = runCatching { Quality.valueOf(intent.getStringExtra(EXTRA_QUALITY)!!) }.getOrDefault(Quality.Q720)
-        vm.load(episodeId, language, quality)
+        vm.load(episodeId, language, quality, allowData = intent.getBooleanExtra(EXTRA_ALLOW_DATA, false))
         setContent {
             MyOnePaceTheme(ThemeMode.DARK) {
                 PlayerScreen(
@@ -52,11 +52,14 @@ class PlayerActivity : ComponentActivity() {
         private const val EXTRA_EPISODE = "episode"
         private const val EXTRA_LANGUAGE = "language"
         private const val EXTRA_QUALITY = "quality"
+        private const val EXTRA_ALLOW_DATA = "allow_data"
 
-        fun intent(context: Context, episodeId: String, language: Language, quality: Quality) =
+        /** Only [PlayLauncherActivity] opens this directly: it applies the playback settings first. */
+        fun intent(context: Context, episodeId: String, language: Language, quality: Quality, allowData: Boolean) =
             Intent(context, PlayerActivity::class.java)
                 .putExtra(EXTRA_EPISODE, episodeId)
                 .putExtra(EXTRA_LANGUAGE, language.name)
                 .putExtra(EXTRA_QUALITY, quality.name)
+                .putExtra(EXTRA_ALLOW_DATA, allowData)
     }
 }

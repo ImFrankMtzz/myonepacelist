@@ -22,9 +22,11 @@ app/src/main/java/com/myonepacelist/
   MyOnePaceApp.kt       AppContainer (DI manual), ImageLoader de Coil, observador que refresca el widget
   data/catalog/         Catalog/Arc/Episode (+ OnePaceLinks), CatalogRepository (assets → caché → remoto)
   data/progress/        AppState (progreso + ajustes) en UN archivo JSON vía DataStore (StateStore)
-  domain/               lógica pura con pruebas: nextEpisode, markUpTo, recordPosition, stats, catalogDiff, BackupCodec
+  domain/               lógica pura con pruebas: nextEpisode, markUpTo, recordPosition, stats, catalogDiff, BackupCodec,
+                        playbackRoute/applyExternalResult (Playback.kt), CatalogGuard (sanea el catálogo)
   ui/                   AppViewModel + MainScreen (nav tipada, hoja de episodio) + pantallas + theme/
-  player/               PlayerActivity/PlayerViewModel/PlayerScreen (Media3 sobre Pixeldrain)
+  player/               PlayLauncherActivity (entrada invisible: datos móviles → integrado o externo),
+                        PlayerActivity/PlayerViewModel/PlayerScreen (Media3 sobre Pixeldrain), Network.kt
   work/                 CatalogSyncWorker (diario) + notificación
   widget/               NextEpisodeWidget (Glance)
 tools/catalog/          Node sin dependencias: parse.mjs (payload RSC de Next.js) y sync.mjs
@@ -39,6 +41,8 @@ Sin Hilt ni Room a propósito: no hay KSP (frágil con Kotlin 2.4), el proyecto 
 - **Tipografía:** Space Grotesk para títulos y números, Inter para el cuerpo. Fuentes variables en `res/font`.
 - **Lógica nueva:** va en `domain/` como función pura y con prueba en `app/src/test`.
 - **No subir a GitHub, no crear tags ni releases** sin confirmación explícita del usuario. La clave de firma (`signing/`, `*.jks`) nunca entra al repo.
+- **Reproducir** siempre con `Context.playEpisode()` o `PlayLauncherActivity.intent()` (también el widget), nunca abriendo `PlayerActivity` directo: el launcher aplica "no reproducir con datos" y el reproductor externo.
+- **Seguridad:** todo valor del catálogo o de un respaldo que termine en una URL o un intent pasa por `CatalogGuard`/`BackupCodec.decode`. Las Actions van fijadas por SHA (con la versión en comentario).
 - **Legal:** la app no aloja ni distribuye video; solo reproduce los enlaces públicos que One Pace publica. No agregar fuentes de video de terceros.
 
 ## Datos de One Pace y Pixeldrain (verificado)
@@ -52,6 +56,8 @@ Sin Hilt ni Room a propósito: no hay KSP (frágil con Kotlin 2.4), el proyecto 
 
 ## Gotchas aprendidos
 
+- **Reproductor externo:** se lanza `ACTION_VIEW` (`video/mp4`) con extras de MX Player (`position` Int en ms, `return_result`, `title`). VLC también acepta `position` y devuelve `extra_position`/`extra_duration`; MX y mpv devuelven `position`/`duration`/`end_by`. Probado con VLC: arranca en el minuto guardado y lo devuelve al cerrar.
+- **Red medida:** se usa `NET_CAPABILITY_NOT_METERED` (y `TEMPORARILY_NOT_METERED`), no "es celular", así que un hotspot también cuenta como datos.
 - **Glance:** lo que va antes de `provideContent` solo corre al iniciar la sesión del widget. Lee el estado dentro de la composición (`collectAsState`/`produceState`). RemoteViews solo admite ciertas vistas: un `<View>` suelto rompe la vista previa (usa `ImageView`). Los bitmaps deben ser software (`allowHardware(false)`).
 - **Persistencia del reproductor:** usa `container.scope` (no `viewModelScope`) para que se guarde la posición en `onCleared`.
 - **Botón play/pausa:** refleja `playWhenReady`, no `isPlaying`, para no parpadear mientras carga.
@@ -65,4 +71,5 @@ Sin Hilt ni Room a propósito: no hay KSP (frágil con Kotlin 2.4), el proyecto 
 - Capturas: `adb exec-out screencap -p`, reducidas a 480 px de ancho con PIL. Coordenadas reales = coordenadas en la captura × 2.8.
 - Los controles del reproductor se ocultan a los 3 s: el primer toque solo los muestra.
 - En la pantalla de inicio del usuario hay widgets personales (calendario): **verifica con una captura en qué página estás antes de tocar**.
+- **Probar "no reproducir con datos" sin gastar datos:** `adb shell cmd netpolicy set metered-network '"<SSID>"' true` marca el Wi-Fi como medido; al terminar, regrésalo con `undefined`. No imprimas `cmd netpolicy list wifi-networks`, que muestra todas las redes guardadas del usuario.
 - **Probar avisos** (solo debug): sirve un `catalog.json` modificado con `python -I -m http.server 8765 --bind 127.0.0.1`, corre `adb reverse tcp:8765 tcp:8765`, compila con `-PcatalogUrl=http://127.0.0.1:8765/catalog.json` y dispara el worker con `adb shell am start -n com.myonepacelist.debug/com.myonepacelist.MainActivity --ez qa_sync true` (repite si la Activity se recreó). Al terminar: borra `files/catalog.json` con `run-as`, quita el reverse y reinstala sin `catalogUrl`.

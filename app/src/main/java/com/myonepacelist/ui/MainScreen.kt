@@ -79,8 +79,9 @@ fun MainScreen(vm: AppViewModel, openEpisode: Flow<String>) {
                     androidx.activity.result.contract.ActivityResultContracts.OpenDocument(),
                 ) { uri ->
                     uri ?: return@rememberLauncherForActivityResult
-                    runCatching { context.contentResolver.openInputStream(uri)!!.use { it.readBytes().decodeToString() } }
+                    runCatching { context.readBackupFile(uri) }
                         .onSuccess { vm.importBackup(it) }
+                        .onFailure { vm.message(if (it is IllegalArgumentException) it.message!! else "No se pudo leer el archivo") }
                 }
                 OnboardingScreen(
                     catalog,

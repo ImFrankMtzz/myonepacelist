@@ -27,13 +27,30 @@ object BackupCodec {
     fun export(state: AppState, now: Long): String =
         json.encodeToString(Backup.serializer(), Backup(exportedAt = now, progress = state.progress, settings = state.settings))
 
-    /** @throws IllegalArgumentException when the file is not a MyOnePaceList backup. */
+    /** A real backup of all ~500 episodes is ~100 KB. */
+    const val MAX_CHARS = 2_000_000
+    private const val MAX_ENTRIES = 10_000
+    private const val MAX_MS = 6L * 60 * 60 * 1000
+
+    /**
+     * @throws IllegalArgumentException when the file is not a MyOnePaceList backup.
+     * The file comes from anywhere, so entries are sanitized: unknown-looking ids are dropped and
+     * positions are clamped.
+     */
     fun decode(text: String): Backup {
+        require(text.length <= MAX_CHARS) { "El archivo es demasiado grande para ser un respaldo" }
         val b = runCatching { json.decodeFromString(Backup.serializer(), text) }
             .getOrElse { throw IllegalArgumentException("El archivo no es un respaldo válido", it) }
         require(b.app == Backup.APP_ID) { "El archivo no es un respaldo de MyOnePaceList" }
         require(b.schema <= Backup.SCHEMA) { "Respaldo de una versión más nueva de la app" }
-        return b
+        require(b.progress.size <= MAX_ENTRIES) { "El respaldo tiene demasiadas entradas" }
+        val progress = b.progress
+            .filterKeys { CatalogGuard.isSlug(it) }
+            .mapValues { (_, p) ->
+                val dur = p.durationMs.coerceIn(0, MAX_MS)
+                p.copy(durationMs = dur, positionMs = p.positionMs.coerceIn(0, if (dur > 0) dur else MAX_MS))
+            }
+        return b.copy(progress = progress)
     }
 
     /** Merges [backup] into [state]: per episode, the most recently updated entry wins. */

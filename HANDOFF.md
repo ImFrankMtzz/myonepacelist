@@ -1,6 +1,6 @@
 # HANDOFF — MyOnePaceList
 
-_Actualizado: 2026-11-03._
+_Actualizado: 2026-11-03 (tarde)._
 
 ## Objetivo
 
@@ -24,8 +24,16 @@ Todo lo del diseño está implementado (`docs/superpowers/specs/2026-11-03-myone
 | Exportar, borrar e importar | ✅ 29 episodios recuperados; también desde la bienvenida |
 | Aviso de episodios nuevos | ✅ con catálogo de prueba local; tocarlo abre el episodio |
 | Widget | ✅ fondo con la imagen del arco actual, se actualiza en vivo y abre el reproductor |
+| Reproductor externo (VLC) | ✅ selector de Android → VLC arranca en el minuto guardado y al cerrar devuelve la posición (24:14 guardado) |
+| No reproducir con datos | ✅ con red medida pregunta antes; "Reproducir igual" abre el reproductor; si la red pasa a medida a media reproducción, pausa y ofrece "Seguir con datos"; al volver el Wi-Fi quita el aviso |
 
-Verificación automática: `testDebugUnitTest` (16 pruebas) y `tools/catalog` (5 pruebas) pasan, `lintDebug` da 0 errores, y debug y release (R8, ~4 MB) compilan.
+Verificación automática: `testDebugUnitTest` (32 pruebas) y `tools/catalog` (7 pruebas) pasan, `lintDebug` da 0 errores, y debug y release (R8, ~4 MB) compilan.
+
+## Auditoría de seguridad (2026-11-03)
+
+Corregido: el catálogo remoto se sanea (`CatalogGuard`) y se limita a 5 MB; el generador rechaza IDs, slugs o imágenes raros; los respaldos importados se limitan a 2 MB y se sanean; los resultados del reproductor externo se acotan; Media3 ya no sigue redirecciones https→http; las Actions están fijadas por SHA, CI corre con `contents: read`, `persist-credentials: false`, sin `${{ }}` dentro de `run`, y el release se compila sin caché, borra el keystore y publica `SHA256SUMS.txt`.
+Sin hallazgos: secretos en el historial, claves en el repo, logs, WebView, componentes exportados de más, cleartext en release, PendingIntent mutables.
+Pendiente de decidir: el correo de los commits es el Gmail del usuario (será público al subir).
 
 ## Pendiente (requiere al usuario)
 

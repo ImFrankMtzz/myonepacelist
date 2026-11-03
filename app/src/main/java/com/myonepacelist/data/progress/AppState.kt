@@ -30,6 +30,10 @@ data class Settings(
     val theme: ThemeMode = ThemeMode.SYSTEM,
     val notifications: Boolean = false,
     val autoplayNext: Boolean = true,
+    /** Open episodes in another video app instead of the built-in player. */
+    val externalPlayer: Boolean = false,
+    /** Don't stream on mobile data (metered networks) without asking first. */
+    val wifiOnly: Boolean = false,
 )
 
 /** Everything the app persists. Lives in a single DataStore file (no account, no server). */

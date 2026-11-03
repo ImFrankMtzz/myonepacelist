@@ -46,6 +46,21 @@ class BackupTest {
         assertThrows(IllegalArgumentException::class.java) { BackupCodec.decode("no json") }
     }
 
+    @Test fun `imported entries are sanitized`() {
+        val text = """{"app":"MyOnePaceList","schema":1,"exportedAt":1,"settings":{},"progress":{
+            "a-01":{"status":"IN_PROGRESS","positionMs":-50,"durationMs":1000,"updatedAt":1},
+            "a-02":{"status":"IN_PROGRESS","positionMs":99999999999,"durationMs":2000,"updatedAt":1},
+            "../evil":{"status":"WATCHED","updatedAt":1}}}"""
+        val b = BackupCodec.decode(text)
+        assertEquals(setOf("a-01", "a-02"), b.progress.keys)
+        assertEquals(0L, b.progress["a-01"]?.positionMs)
+        assertEquals(2000L, b.progress["a-02"]?.positionMs)
+    }
+
+    @Test fun `refuses huge files`() {
+        assertThrows(IllegalArgumentException::class.java) { BackupCodec.decode(" ".repeat(BackupCodec.MAX_CHARS + 1)) }
+    }
+
     @Test fun `bundled catalog parses and has spanish sources`() {
         val file = listOf(File("src/main/assets/catalog.json"), File("app/src/main/assets/catalog.json")).first { it.exists() }
         val catalog = json.decodeFromString(Catalog.serializer(), file.readText())

@@ -123,7 +123,7 @@ fun PlayerScreen(vm: PlayerViewModel, onClose: () -> Unit, onOpenBrowser: (Strin
             CircularProgressIndicator(color = Tokens.accent, modifier = Modifier.align(Alignment.Center).size(56.dp))
         }
 
-        AnimatedVisibility(controls && ui.error == null && ui.countdown == null, enter = fadeIn(), exit = fadeOut(), modifier = Modifier.fillMaxSize()) {
+        AnimatedVisibility(controls && ui.error == null && ui.countdown == null && !ui.pausedForData, enter = fadeIn(), exit = fadeOut(), modifier = Modifier.fillMaxSize()) {
             Box(Modifier.fillMaxSize().background(Color(0x59000000)).safeDrawingPadding().padding(horizontal = 24.dp, vertical = 16.dp)) {
                 Row(Modifier.fillMaxWidth().align(Alignment.TopStart), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     RoundIcon(Icons.AutoMirrored.Rounded.ArrowBack, "Salir del reproductor", onClose)
@@ -195,6 +195,22 @@ fun PlayerScreen(vm: PlayerViewModel, onClose: () -> Unit, onOpenBrowser: (Strin
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     FilledTonalButton(onClick = { vm.cancelCountdown() }) { Text("Cancelar") }
                     Button(onClick = { vm.playNext() }, colors = ButtonDefaults.buttonColors(containerColor = Tokens.accent, contentColor = Tokens.onAccent)) { Text("Ver ahora") }
+                }
+            }
+        }
+
+        if (ui.pausedForData && ui.error == null) {
+            Overlay {
+                Text("Pausamos: estás con datos móviles", color = OnVideo, style = MaterialTheme.typography.titleMedium)
+                Text(
+                    "Pediste no reproducir con datos. Vuelve al Wi-Fi o sigue con datos solo esta vez.",
+                    color = Color(0xFFC4CBD5), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.widthIn(max = 460.dp),
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    FilledTonalButton(onClick = onClose) { Text("Salir") }
+                    Button(onClick = { vm.continueOnData() }, colors = ButtonDefaults.buttonColors(containerColor = Tokens.accent, contentColor = Tokens.onAccent)) {
+                        Text("Seguir con datos")
+                    }
                 }
             }
         }

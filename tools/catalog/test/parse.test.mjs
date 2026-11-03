@@ -85,10 +85,43 @@ test("validate rejects shrinking or duplicated catalogs", () => {
   const mk = (n, dup = false) => ({
     schema: 1,
     arcs: Array.from({ length: 10 }, (_, a) => ({
-      episodes: Array.from({ length: n }, (_, e) => ({ id: dup ? "same" : `a${a}-${e}` })),
+      slug: `a${a}`,
+      episodes: Array.from({ length: n }, (_, e) => ({ id: dup ? "same" : `a${a}-${e}`, sub: { 720: "AbCd1234" } })),
     })),
   });
   assert.ok(validate(mk(10), mk(10)));
   assert.throws(() => validate(mk(5), mk(10)), /dropped/);
   assert.throws(() => validate(mk(2, true)), /duplicate/);
+});
+
+test("validate rejects values that would change the app's URLs", () => {
+  const ok = () => ({
+    schema: 1,
+    arcs: Array.from({ length: 10 }, (_, a) => ({
+      slug: `a${a}`, image: "/_next/static/media/a.jpg",
+      episodes: [{ id: `a${a}-01`, image: null, sub: { 720: "AbCd1234" }, dub: null, extended: null }],
+    })),
+  });
+  assert.ok(validate(ok()));
+  const bad = [
+    (c) => (c.arcs[0].episodes[0].sub["720"] = "../../user/x"),
+    (c) => (c.arcs[0].episodes[0].sub["720"] = "abc?d=1"),
+    (c) => (c.arcs[0].episodes[0].sub["4k"] = "AbCd1234"),
+    (c) => (c.arcs[0].episodes[0].extended = { sub: { 720: "a/b" }, dub: null }),
+    (c) => (c.arcs[0].image = "//evil.example/x.jpg"),
+    (c) => (c.arcs[0].episodes[0].image = "https://evil.example/x.jpg"),
+    (c) => (c.arcs[0].slug = "../x"),
+    (c) => (c.arcs[0].episodes[0].id = "Bad Id"),
+  ];
+  for (const mutate of bad) {
+    const c = ok();
+    mutate(c);
+    assert.throws(() => validate(c), /suspicious|bad|unexpected/);
+  }
+});
+
+test("the published catalog passes validation", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const cat = JSON.parse(await readFile(new URL("../../../catalog.json", import.meta.url), "utf8"));
+  assert.ok(validate(cat));
 });

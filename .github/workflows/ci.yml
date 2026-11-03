@@ -6,21 +6,29 @@ on:
     paths-ignore: ["catalog.json", "app/src/main/assets/catalog.json"]
   pull_request:
 
+# Acciones fijadas por SHA (el comentario dice la versión): una etiqueta movida no cambia lo que corre.
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22
       - name: Pruebas del catálogo
         working-directory: tools/catalog
         run: npm test
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
           distribution: temurin
           java-version: 21
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
       - name: Pruebas y APK debug
-        run: ./gradlew testDebugUnitTest assembleDebug lintDebug -PgithubUser=${{ github.repository_owner }}
+        env:
+          OWNER: ${{ github.repository_owner }}
+        run: ./gradlew testDebugUnitTest assembleDebug lintDebug "-PgithubUser=$OWNER"

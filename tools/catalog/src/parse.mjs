@@ -109,15 +109,43 @@ export function toCatalog(segments, now = new Date()) {
   return { schema: SCHEMA, version, generatedAt: now.toISOString(), source: "https://onepace.net/es-419/watch", arcs };
 }
 
-/** Throws if the catalog looks broken or shrank compared to the previous one. */
+// These values end up inside URLs in the app (Pixeldrain, the onepace.net image optimizer).
+// The app sanitizes them too (CatalogGuard.kt); here a surprise fails the run instead of publishing it.
+const SLUG = /^[a-z0-9][a-z0-9.-]{0,95}$/;
+const FILE_ID = /^[A-Za-z0-9]{4,32}$/;
+const RESOLUTIONS = new Set(["480", "720", "1080"]);
+const isImagePath = (s) => s.startsWith("/") && !s.startsWith("//") && !s.includes("..") && !/[\s\\]/.test(s);
+
+function checkFiles(where, files) {
+  if (files == null) return;
+  for (const [res, id] of Object.entries(files)) {
+    if (!RESOLUTIONS.has(res)) throw new Error(`unexpected resolution ${res} in ${where}`);
+    if (typeof id !== "string" || !FILE_ID.test(id)) throw new Error(`suspicious file id ${JSON.stringify(id)} in ${where}`);
+  }
+}
+
+function checkImage(where, src) {
+  if (src != null && (typeof src !== "string" || !isImagePath(src))) throw new Error(`suspicious image ${JSON.stringify(src)} in ${where}`);
+}
+
+/** Throws if the catalog looks broken, carries unexpected values or shrank compared to the previous one. */
 export function validate(cat, previous) {
   if (cat.schema !== SCHEMA) throw new Error("bad schema");
   if (cat.arcs.length < 10) throw new Error(`too few arcs: ${cat.arcs.length}`);
   const count = (c) => c.arcs.reduce((n, a) => n + a.episodes.length, 0);
   const ids = new Set();
-  for (const a of cat.arcs) for (const e of a.episodes) {
-    if (!e.id || ids.has(e.id)) throw new Error(`bad/duplicate episode id ${e.id}`);
-    ids.add(e.id);
+  for (const a of cat.arcs) {
+    if (typeof a.slug !== "string" || !SLUG.test(a.slug)) throw new Error(`bad arc slug ${JSON.stringify(a.slug)}`);
+    checkImage(a.slug, a.image);
+    for (const e of a.episodes) {
+      if (typeof e.id !== "string" || !SLUG.test(e.id) || ids.has(e.id)) throw new Error(`bad/duplicate episode id ${e.id}`);
+      ids.add(e.id);
+      checkImage(e.id, e.image);
+      checkFiles(e.id, e.sub);
+      checkFiles(e.id, e.dub);
+      checkFiles(`${e.id} (extended)`, e.extended?.sub);
+      checkFiles(`${e.id} (extended)`, e.extended?.dub);
+    }
   }
   if (previous && count(cat) < count(previous) * 0.9)
     throw new Error(`episode count dropped ${count(previous)} -> ${count(cat)}`);

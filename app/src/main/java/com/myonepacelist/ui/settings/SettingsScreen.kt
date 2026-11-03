@@ -60,6 +60,7 @@ import com.myonepacelist.ui.components.SectionLabel
 import com.myonepacelist.ui.components.Segmented
 import com.myonepacelist.ui.components.label
 import com.myonepacelist.ui.openInBrowser
+import com.myonepacelist.ui.readBackupFile
 import com.myonepacelist.ui.theme.Tokens
 import java.time.LocalDate
 
@@ -77,9 +78,9 @@ fun SettingsScreen(ui: UiState, vm: AppViewModel, contentPadding: PaddingValues,
     }
     val importLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         uri ?: return@rememberLauncherForActivityResult
-        runCatching { context.contentResolver.openInputStream(uri)!!.use { it.readBytes().decodeToString() } }
+        runCatching { context.readBackupFile(uri) }
             .onSuccess { vm.importBackup(it) }
-            .onFailure { vm.message("No se pudo leer el archivo") }
+            .onFailure { vm.message(if (it is IllegalArgumentException) it.message!! else "No se pudo leer el archivo") }
     }
     val notifPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         vm.updateSettings { it.copy(notifications = granted) }
@@ -118,6 +119,17 @@ fun SettingsScreen(ui: UiState, vm: AppViewModel, contentPadding: PaddingValues,
             Segmented(Quality.entries, s.quality, { q -> update { it.copy(quality = q) } }, { "${it.key}p" })
             Text("720p equilibra calidad y datos móviles.", style = MaterialTheme.typography.bodySmall, color = Tokens.textMuted)
             SwitchRow("Reproducir el siguiente episodio al terminar", s.autoplayNext) { v -> update { it.copy(autoplayNext = v) } }
+            SwitchRow("No reproducir con datos móviles", s.wifiOnly) { v -> update { it.copy(wifiOnly = v) } }
+            Text(
+                "Con datos te preguntaremos antes de empezar, y si el Wi-Fi se corta pausamos el video.",
+                style = MaterialTheme.typography.bodySmall, color = Tokens.textMuted,
+            )
+            SwitchRow("Usar un reproductor externo", s.externalPlayer) { v -> update { it.copy(externalPlayer = v) } }
+            Text(
+                "Abre los episodios en VLC, MX Player, mpv u otra app de video. " +
+                    "Si tu reproductor avisa en qué minuto te quedaste (VLC, MX Player y mpv lo hacen), lo guardamos; si no, marca el episodio a mano.",
+                style = MaterialTheme.typography.bodySmall, color = Tokens.textMuted,
+            )
         } }
 
         item { Group("Apariencia") {

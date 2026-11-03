@@ -51,7 +51,7 @@ import com.myonepacelist.R
 import com.myonepacelist.container
 import com.myonepacelist.domain.arcProgress
 import com.myonepacelist.domain.nextEpisode
-import com.myonepacelist.player.PlayerActivity
+import com.myonepacelist.player.PlayLauncherActivity
 
 private val Bg = ColorProvider(Color(0xFF161B22))
 private val Text1 = ColorProvider(Color(0xFFE8ECF1))
@@ -80,7 +80,7 @@ class NextEpisodeWidget : GlanceAppWidget() {
             val intent = when {
                 next == null -> context.packageManager.getLaunchIntentForPackage(context.packageName)!!
                 lang == null -> MainActivity.episodeIntent(context, next.id)
-                else -> PlayerActivity.intent(context, next.id, lang, state.settings.quality)
+                else -> PlayLauncherActivity.intent(context, next.id, lang, state.settings.quality)
             }
             val backdrop = produceState<Bitmap?>(null, arc?.image) { value = loadBackdrop(context, arc?.image) }.value
             Content(

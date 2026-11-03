@@ -1,6 +1,9 @@
 package com.myonepacelist.player
 
 import android.app.Application
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
 import androidx.annotation.OptIn
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,6 +24,7 @@ import com.myonepacelist.data.catalog.Quality
 import com.myonepacelist.data.progress.WatchStatus
 import com.myonepacelist.domain.WATCHED_THRESHOLD
 import com.myonepacelist.domain.recordPosition
+import com.myonepacelist.domain.shouldPauseForData
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,6 +51,8 @@ data class PlayerUi(
     val error: String? = null,
     /** Pixeldrain viewer page for the current file (browser fallback). */
     val fallbackUrl: String? = null,
+    /** Paused because the network switched to mobile data and the user asked not to stream on it. */
+    val pausedForData: Boolean = false,
 )
 
 @OptIn(UnstableApi::class)
@@ -60,7 +66,8 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
             DefaultMediaSourceFactory(
                 DefaultHttpDataSource.Factory()
                     .setUserAgent("MyOnePaceList/${com.myonepacelist.BuildConfig.VERSION_NAME} (Android)")
-                    .setAllowCrossProtocolRedirects(true),
+                    // Never follow an https -> http redirect (the platform blocks cleartext anyway).
+                    .setAllowCrossProtocolRedirects(false),
             ),
         )
         .setSeekBackIncrementMs(10_000)
@@ -71,7 +78,21 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
     private var countdownJob: Job? = null
     private var loaded = false
 
+    /** The user accepted mobile data for this session (from the launcher's dialog or the pause overlay). */
+    private var allowData = false
+    @Volatile private var metered = app.isOnMeteredNetwork()
+    private val connectivity = app.getSystemService(ConnectivityManager::class.java)
+    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onCapabilitiesChanged(network: Network, caps: NetworkCapabilities) {
+            val nowMetered = caps.isMetered()
+            if (nowMetered == metered) return
+            metered = nowMetered
+            viewModelScope.launch { onNetworkChanged() }
+        }
+    }
+
     init {
+        runCatching { connectivity?.registerDefaultNetworkCallback(networkCallback) }
         player.addListener(object : Player.Listener {
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 if (!isPlaying) persist()
@@ -103,9 +124,10 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
         })
     }
 
-    fun load(episodeId: String, language: Language, quality: Quality) {
+    fun load(episodeId: String, language: Language, quality: Quality, allowData: Boolean = this.allowData) {
         if (loaded && _ui.value.episode?.id == episodeId) return
         loaded = true
+        this.allowData = allowData
         viewModelScope.launch {
             val catalog = c.catalog.load()
             val ep = catalog.episode(episodeId) ?: run {
@@ -138,7 +160,7 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
                 .build()
             player.setMediaItem(item, resumeAt ?: 0L)
             player.prepare()
-            player.play()
+            if (mustPauseForData()) _ui.update { it.copy(pausedForData = true) } else player.play()
             startTicker()
         }
     }
@@ -183,6 +205,26 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    private suspend fun mustPauseForData() = shouldPauseForData(c.state.current().settings, metered, allowData)
+
+    private suspend fun onNetworkChanged() {
+        if (mustPauseForData()) {
+            if (player.playWhenReady) pause()
+            cancelCountdown()
+            _ui.update { it.copy(pausedForData = true) }
+        } else if (!metered) {
+            // Back on Wi-Fi: lift the overlay but let the user press play.
+            _ui.update { it.copy(pausedForData = false) }
+        }
+    }
+
+    /** "Seguir con datos": allow mobile data for the rest of this session. */
+    fun continueOnData() {
+        allowData = true
+        _ui.update { it.copy(pausedForData = false) }
+        player.play()
+    }
+
     fun cancelCountdown() {
         countdownJob?.cancel()
         _ui.update { it.copy(countdown = null) }
@@ -222,6 +264,7 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     override fun onCleared() {
+        runCatching { connectivity?.unregisterNetworkCallback(networkCallback) }
         persist()
         player.release()
     }
