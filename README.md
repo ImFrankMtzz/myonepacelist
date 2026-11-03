@@ -12,7 +12,7 @@ Es como una lista estilo MyAnimeList, pero enfocada solo en One Pace: sin cuenta
 - **Reproductor integrado** (Media3). Guarda tu posición cada 5 segundos, marca el episodio como visto al pasar el 90 % y pasa solo al siguiente. Si Pixeldrain pide verificación, ofrece abrir el episodio en el navegador.
 - **Arcos y episodios** con el avance de cada arco, filtros (pendientes, con doblaje) y "marcar visto hasta aquí".
 - **Estadísticas**: porcentaje completado, horas vistas y por delante, y avance por arco.
-- **Widget** de pantalla de inicio con tu siguiente episodio.
+- **Widget** de pantalla de inicio con tu siguiente episodio sobre la imagen del arco en curso; se añade desde Ajustes.
 - **Avisos** cuando One Pace publica episodios nuevos o doblaje nuevo (opcional).
 - **Respaldo**: exporta e importa tu progreso como archivo JSON para cambiar de teléfono.
 - Tema oscuro y claro.
