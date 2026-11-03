@@ -189,7 +189,7 @@ private fun AppScaffold(ui: UiState, vm: AppViewModel, openEpisode: Flow<String>
 /** Status/navigation bar icons follow the app theme, even when it differs from the system one. */
 @Composable
 private fun SystemBars(dark: Boolean) {
-    val activity = LocalContext.current as? androidx.activity.ComponentActivity ?: return
+    val activity = androidx.activity.compose.LocalActivity.current as? androidx.activity.ComponentActivity ?: return
     androidx.compose.runtime.DisposableEffect(dark) {
         val transparent = android.graphics.Color.TRANSPARENT
         val style = if (dark) androidx.activity.SystemBarStyle.dark(transparent)
