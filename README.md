@@ -35,7 +35,7 @@ onepace.net ──(GitHub Action diaria)──> catalog.json en este repo ──
 
 ## Seguridad y privacidad
 
-- Sin cuentas, sin anuncios, sin analíticas. Los únicos permisos son internet, estado de la red (para el ajuste de datos móviles) y notificaciones (opcional).
+- Sin cuentas, sin anuncios, sin analíticas. La app pide internet, estado de la red (para el ajuste de datos móviles) y notificaciones (opcional). WorkManager, que hace la revisión diaria del catálogo, añade además `WAKE_LOCK`, `RECEIVE_BOOT_COMPLETED` y `FOREGROUND_SERVICE`: sirven para reprogramar esa revisión tras reiniciar el teléfono, no para otra cosa.
 - El catálogo descargado se valida antes de usarse: IDs de Pixeldrain, rutas de imagen y slugs que no tengan el formato que publica One Pace se descartan, tanto en la Action que lo genera como en la app.
 - Los respaldos importados se validan (tamaño, formato y valores) y lo que reporta un reproductor externo se acota a valores razonables.
 - La versión release no permite tráfico sin cifrar. Las Actions están fijadas por SHA y el APK de cada Release lleva su `SHA256SUMS.txt`.

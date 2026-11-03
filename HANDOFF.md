@@ -37,6 +37,7 @@ Los commits usan el correo noreply de GitHub del usuario (el Gmail se reescribi�
 
 ## Pendiente (requiere al usuario)
 
+0. ✅ **Release v0.1.0 publicado** (https://github.com/ImFrankMtzz/myonepacelist/releases/tag/v0.1.0): APK firmado (cert SHA-256 `a4753e76…786f`, `CN=MyOnePaceList`) + `SHA256SUMS.txt`, verificados tras descargarlos. Secrets `SIGNING_*` cargados. La clave vive solo en `signing/` (fuera de git): guardar copia aparte.
 1. ✅ Usuario de GitHub: `githubUser=ImFrankMtzz`; repo público `github.com/ImFrankMtzz/myonepacelist` (en minúsculas, también en la URL del catálogo).
 2. ✅ Repo creado por el usuario y push hecho (2026-11-03).
 3. **Clave de firma para releases:** `keytool` (comando en el README), guardarla fuera del repo y cargar los 4 secrets (`SIGNING_*`). Luego subir la etiqueta `v0.1.0` (con confirmación).
