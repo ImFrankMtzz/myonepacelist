@@ -4,6 +4,18 @@ App Android minimalista para llevar tu avance de **[One Pace](https://onepace.ne
 
 Es como una lista estilo MyAnimeList, pero enfocada solo en One Pace: sin cuentas, sin anuncios y sin rastreo. Tu progreso vive en tu teléfono.
 
+## Capturas
+
+<p align="center">
+  <img src="docs/screenshots/home.png" alt="Inicio: continuar donde te quedaste" width="23%">
+  <img src="docs/screenshots/arcs.png" alt="Arcos con su avance" width="23%">
+  <img src="docs/screenshots/stats.png" alt="Estadísticas" width="23%">
+  <img src="docs/screenshots/settings.png" alt="Ajustes de reproducción" width="23%">
+</p>
+<p align="center">
+  <img src="docs/screenshots/player.png" alt="Reproductor integrado" width="80%">
+</p>
+
 ## Qué hace
 
 - **¿Dónde te quedaste?**: en el primer uso eliges arco y episodio, y la app marca como vistos todos los anteriores.

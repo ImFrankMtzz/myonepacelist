@@ -55,4 +55,4 @@ Los commits usan el correo noreply de GitHub del usuario (el Gmail se reescribi�
 - Picture-in-picture en el reproductor.
 - Mostrar en el detalle del arco las versiones extendidas (`extended`, ya están en el catálogo).
 - Usar en la UI la duración real del archivo cuando se conozca (el catálogo redondea; el 06 dice 25 min y dura 26:57).
-- Capturas de pantalla para el README cuando el repo sea público.
+- ✅ Capturas en `docs/screenshots/` y en el README (se tomaron en el Pixel con `adb screencap`, recortando la barra de estado).
