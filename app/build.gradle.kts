@@ -21,7 +21,7 @@ android {
             "String",
             "CATALOG_URL",
             "\"" + providers.gradleProperty("catalogUrl").getOrElse(
-                "https://raw.githubusercontent.com/${providers.gradleProperty("githubUser").get()}/MyOnePaceList/main/catalog.json",
+                "https://raw.githubusercontent.com/${providers.gradleProperty("githubUser").get()}/myonepacelist/main/catalog.json",
             ) + "\"",
         )
     }

@@ -33,12 +33,12 @@ Verificación automática: `testDebugUnitTest` (32 pruebas) y `tools/catalog` (7
 
 Corregido: el catálogo remoto se sanea (`CatalogGuard`) y se limita a 5 MB; el generador rechaza IDs, slugs o imágenes raros; los respaldos importados se limitan a 2 MB y se sanean; los resultados del reproductor externo se acotan; Media3 ya no sigue redirecciones https→http; las Actions están fijadas por SHA, CI corre con `contents: read`, `persist-credentials: false`, sin `${{ }}` dentro de `run`, y el release se compila sin caché, borra el keystore y publica `SHA256SUMS.txt`.
 Sin hallazgos: secretos en el historial, claves en el repo, logs, WebView, componentes exportados de más, cleartext en release, PendingIntent mutables.
-Pendiente de decidir: el correo de los commits es el Gmail del usuario (será público al subir).
+Los commits usan el correo noreply de GitHub del usuario (el Gmail se reescribió antes del primer push).
 
 ## Pendiente (requiere al usuario)
 
-1. **Usuario de GitHub.** Ponerlo en `gradle.properties` → `githubUser=`. Hoy es `TU_USUARIO_GITHUB`, así que la app instalada no puede descargar el catálogo remoto. En CI se toma solo de `github.repository_owner`.
-2. **Crear el repo `MyOnePaceList` y hacer push.** `gh` no está instalado: o lo crea el usuario o se instala `gh` con su permiso. Solo con confirmación explícita.
+1. ✅ Usuario de GitHub: `githubUser=ImFrankMtzz`; repo público `github.com/ImFrankMtzz/myonepacelist` (en minúsculas, también en la URL del catálogo).
+2. ✅ Repo creado por el usuario y push hecho (2026-11-03).
 3. **Clave de firma para releases:** `keytool` (comando en el README), guardarla fuera del repo y cargar los 4 secrets (`SIGNING_*`). Luego subir la etiqueta `v0.1.0` (con confirmación).
 4. Tras el primer push: correr a mano el workflow **Catálogo** para comprobar que hace commit del `catalog.json`.
 
