@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MyOnePaceList</string>
+    <string name="widget_description">Tu siguiente episodio de One Pace, a un toque</string>
 </resources>
