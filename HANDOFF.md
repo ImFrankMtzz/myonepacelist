@@ -66,7 +66,7 @@ Los commits usan el correo noreply de GitHub del usuario (el Gmail se reescribi�
 - Reinstalado el 2026-11-03 18:07 (`adb install -r`, progreso y ajustes intactos) con la URL de catálogo correcta (`ImFrankMtzz/myonepacelist`); la instalación anterior apuntaba a `TU_USUARIO_GITHUB` y nunca bajaba el catálogo remoto.
 - Instalado `com.myonepacelist.debug` con el **progreso real del usuario** (Isla de Drum 02, ~24 min) y los ajustes que él eligió (incluye "No reproducir con datos móviles" activado). No restaurar respaldos viejos encima: avanzó entre pruebas.
 - `/sdcard/Download/myonepacelist-2026-11-03.json`: respaldo viejo de progreso de prueba; se puede borrar.
-- El Release v0.1.0 (`com.myonepacelist`, sin `.debug`) **no está instalado** en el teléfono; sería un paquete aparte.
+- El Release v0.1.0 (`com.myonepacelist`, sin `.debug`) **sí está instalado** desde el 2026-11-03 18:08 (APK descargado de GitHub, checksum y firma verificados). Es una app aparte y **sin progreso** (muestra la bienvenida): el progreso real sigue en la debug. Para migrarlo: exportar en la debug y "Restaurar un respaldo" en la release. Ojo: con las dos instaladas hay dos widgets y los avisos se duplican.
 - Widget en una página nueva de la pantalla de inicio (a la derecha de la página de widgets).
 - `stay_on_while_plugged_in = 2` (pedido por el usuario; se queda así).
 - La carpeta de pruebas de adb (`scratchpad`) tiene respaldos del estado; no están en el repo.
