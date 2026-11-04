@@ -63,6 +63,7 @@ Los commits usan el correo noreply de GitHub del usuario (el Gmail se reescribi�
 
 ## Estado del teléfono
 
+- Reinstalado el 2026-11-03 18:07 (`adb install -r`, progreso y ajustes intactos) con la URL de catálogo correcta (`ImFrankMtzz/myonepacelist`); la instalación anterior apuntaba a `TU_USUARIO_GITHUB` y nunca bajaba el catálogo remoto.
 - Instalado `com.myonepacelist.debug` con el **progreso real del usuario** (Isla de Drum 02, ~24 min) y los ajustes que él eligió (incluye "No reproducir con datos móviles" activado). No restaurar respaldos viejos encima: avanzó entre pruebas.
 - `/sdcard/Download/myonepacelist-2026-11-03.json`: respaldo viejo de progreso de prueba; se puede borrar.
 - El Release v0.1.0 (`com.myonepacelist`, sin `.debug`) **no está instalado** en el teléfono; sería un paquete aparte.
