@@ -1,0 +1,50 @@
+name: Algo no funciona
+description: Reporta un error de la app
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Gracias por avisar. **No pegues datos personales** (correos, teléfonos, contraseñas) ni enlaces privados.
+        Si es un problema de **seguridad**, no lo publiques aquí: usa Security → *Report a vulnerability*.
+  - type: textarea
+    id: que-pasa
+    attributes:
+      label: ¿Qué pasó?
+      description: Lo que viste y lo que esperabas ver.
+    validations:
+      required: true
+  - type: textarea
+    id: pasos
+    attributes:
+      label: Pasos para repetirlo
+      placeholder: |
+        1. Abro el episodio…
+        2. Toco…
+    validations:
+      required: false
+  - type: input
+    id: version
+    attributes:
+      label: Versión de la app
+      description: En Ajustes, al final de la pantalla.
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: telefono
+    attributes:
+      label: Teléfono y versión de Android
+      placeholder: "Pixel 8 Pro, Android 17"
+    validations:
+      required: false
+  - type: dropdown
+    id: reproductor
+    attributes:
+      label: ¿Con qué reproductor pasa?
+      options:
+        - El integrado de la app
+        - Uno externo (VLC, MX Player, mpv…)
+        - No aplica
+    validations:
+      required: false

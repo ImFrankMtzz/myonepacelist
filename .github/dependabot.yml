@@ -1,0 +1,29 @@
+# Dependabot: avisa de versiones nuevas de las librerías y de las GitHub Actions.
+# Las Actions van fijadas por SHA (con la versión en un comentario): Dependabot actualiza ambos.
+# Solo abre pull requests; nada se fusiona solo. Revisa que CI quede en verde antes de aceptar.
+version: 2
+updates:
+  - package-ecosystem: gradle
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      # Parches y menores juntos en un solo PR; los cambios mayores (p. ej. AGP o Kotlin) van aparte.
+      gradle-minor-patch:
+        update-types: ["minor", "patch"]
+    commit-message:
+      prefix: "deps"
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 3
+    groups:
+      actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: "ci"

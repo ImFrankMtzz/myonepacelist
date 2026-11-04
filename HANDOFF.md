@@ -59,7 +59,8 @@ Los commits usan el correo noreply de GitHub del usuario (el Gmail se reescribi�
    - Esa comunidad es en inglés y el catálogo solo trae español latino: el post tendría que aclararlo en la primera línea (borrador bilingüe en la conversación; si se retoma, rehacerlo).
    - Cuentas nuevas: muchas comunidades las filtran por karma/antigüedad; empezar comentando y no repetir el mismo post en varias a la vez.
 4. Opcional: *attestation* de procedencia en `release.yml` (`actions/attest-build-provenance`) y un `v0.1.1`, para reforzar "cada build rastreable al código". Solo con confirmación.
-5. Opcional: *topics* de GitHub (`one-piece`, `onepace`, `android`, `kotlin`) con `gh` (ya inició sesión como ImFrankMtzz).
+5. ✅ **Ajustes del repo en GitHub (2026-11-03):** descripción y 7 *topics*; wiki apagada; alertas de Dependabot y actualizaciones de seguridad activas; reporte privado de vulnerabilidades activo; escaneo de secretos y su bloqueo ya estaban activos; `main` protegida solo contra *force push* y borrado (sin exigir PR, para que la tarea de la PC pueda subir directo). Archivos: `SECURITY.md`, `.github/dependabot.yml` (semanal, Gradle y Actions, menores/parches agrupados), plantilla de issue y `config.yml`. Dependabot solo abre PRs: revisar que CI quede en verde antes de aceptar; los cambios mayores (AGP, Kotlin) llegan aparte y pueden romper la compilación.
+6. ✅ `local-sync.ps1` ahora muestra un aviso de Windows si falla (además del log). Probado el camino de fallo (log + código 1); no se pudo confirmar a simple vista el globo de aviso porque la sesión de Claude no es interactiva.
 
 ## Estado del teléfono
 

@@ -23,6 +23,21 @@ function Say([string]$m) {
     Add-Content -Path $Log -Value $line -Encoding UTF8
 }
 
+# Aviso visible cuando algo falla (la tarea corre oculta). Si el aviso mismo falla, no importa: ya quedo en el log.
+function Alert([string]$msg) {
+    try {
+        Add-Type -AssemblyName System.Windows.Forms, System.Drawing
+        $n = New-Object System.Windows.Forms.NotifyIcon
+        $n.Icon = [System.Drawing.SystemIcons]::Warning
+        $n.Visible = $true
+        if ($msg.Length -gt 240) { $msg = $msg.Substring(0, 240) }
+        $n.ShowBalloonTip(15000, 'MyOnePaceList', $msg, [System.Windows.Forms.ToolTipIcon]::Warning)
+        Start-Sleep -Seconds 16
+        $n.Dispose()
+    }
+    catch { }
+}
+
 function Check([string]$what) {
     if ($LASTEXITCODE -ne 0) { throw "$what fallo (codigo $LASTEXITCODE)" }
 }
@@ -73,5 +88,6 @@ try {
 }
 catch {
     Say ('ERROR: ' + $_.Exception.Message)
+    Alert ('No se pudo actualizar el catalogo: ' + $_.Exception.Message)
     exit 1
 }
