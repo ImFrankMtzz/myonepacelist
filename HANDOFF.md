@@ -63,13 +63,12 @@ Los commits usan el correo noreply de GitHub del usuario (el Gmail se reescribi�
 
 ## Estado del teléfono
 
-- Reinstalado el 2026-11-03 18:07 (`adb install -r`, progreso y ajustes intactos) con la URL de catálogo correcta (`ImFrankMtzz/myonepacelist`); la instalación anterior apuntaba a `TU_USUARIO_GITHUB` y nunca bajaba el catálogo remoto.
-- Instalado `com.myonepacelist.debug` con el **progreso real del usuario** (Isla de Drum 02, ~24 min) y los ajustes que él eligió (incluye "No reproducir con datos móviles" activado). No restaurar respaldos viejos encima: avanzó entre pruebas.
-- `/sdcard/Download/myonepacelist-2026-11-03.json`: respaldo viejo de progreso de prueba; se puede borrar.
-- El Release v0.1.0 (`com.myonepacelist`, sin `.debug`) **sí está instalado** desde el 2026-11-03 18:08 (APK descargado de GitHub, checksum y firma verificados). Es una app aparte y **sin progreso** (muestra la bienvenida): el progreso real sigue en la debug. Para migrarlo: exportar en la debug y "Restaurar un respaldo" en la release. Ojo: con las dos instaladas hay dos widgets y los avisos se duplican.
-- Widget en una página nueva de la pantalla de inicio (a la derecha de la página de widgets).
+- El usuario **desinstaló las dos apps** y se instaló solo la debug (`com.myonepacelist.debug`, compilada con la URL de catálogo correcta). Quedó **sin progreso** (muestra la bienvenida): se perdió con el borrado.
+- Respaldo del progreso real (18:05, 50 episodios, Isla de Drum 02 en 23:58) en el formato de la app: `/sdcard/Download/myonepacelist-respaldo-2026-11-03.json`. Se recupera con "Restaurar un respaldo" en la bienvenida (o Ajustes → Importar). Claude no lo restauró a propósito: el usuario decide.
+- El Release v0.1.0 (`com.myonepacelist`) ya no está instalado; si se vuelve a instalar es una app aparte (otra firma y sin progreso).
+- Se perdieron el widget y los permisos de la debug (notificaciones, etc.); hay que volver a añadir el widget (Ajustes → Añadir widget) y activar los avisos.
 - `stay_on_while_plugged_in = 2` (pedido por el usuario; se queda así).
-- La carpeta de pruebas de adb (`scratchpad`) tiene respaldos del estado; no están en el repo.
+- Una desinstalación borra el progreso: antes de desinstalar la debug, exportar el progreso (Ajustes → Exportar).
 
 ## Ideas para después (no comprometidas)
 
