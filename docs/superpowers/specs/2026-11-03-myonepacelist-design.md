@@ -38,7 +38,7 @@ Repositorio git local (rama `main`), publicado en GitHub como `ImFrankMtzz/myone
   ```
   Se ignoran enlaces "obsoleto"; las "versiones extendidas" se guardan como variante del episodio.
 - Copia incluida en `app/src/main/assets/catalog.json` (funciona sin internet).
-- `.github/workflows/catalog.yml`: cron semanal + manual → corre el script, valida el JSON (esquema + nº de episodios ≥ anterior) y hace commit solo si cambió. Así se lee onepace.net **una vez por semana desde GitHub**, no desde cada teléfono.
+- _(Cambio posterior: onepace.net bloquea con 403 a GitHub Actions, así que este workflow se eliminó y el catálogo lo genera `tools/catalog/local-sync.ps1` desde una PC.)_ `.github/workflows/catalog.yml`: cron semanal + manual → corre el script, valida el JSON (esquema + nº de episodios ≥ anterior) y hace commit solo si cambió. Así se lee onepace.net **una vez por semana desde GitHub**, no desde cada teléfono.
 - App: `CatalogRepository` carga assets → reemplaza con el JSON remoto cacheado (`raw.githubusercontent.com/<user>/myonepacelist/main/catalog.json`) si es válido y más nuevo.
 
 ### Progreso (sin login)

@@ -42,7 +42,7 @@ onepace.net ──(script diario en una PC)──> catalog.json en este repo ─
 ```
 
 - `tools/catalog/` lee los datos de la página de One Pace (el payload de Next.js) y genera `catalog.json`: arcos, episodios, sinopsis y los IDs de Pixeldrain para subtítulos y doblaje en cada calidad.
-- `tools/catalog/local-sync.ps1` lo corre cada día desde una PC y hace commit solo si algo cambió. Así onepace.net recibe una visita al día, no una por cada teléfono. No se hace con GitHub Actions porque onepace.net bloquea (403) sus direcciones; `.github/workflows/catalog.yml` queda como botón manual por si eso cambia.
+- `tools/catalog/local-sync.ps1` lo corre cada día desde una PC y hace commit solo si algo cambió. Así onepace.net recibe una visita al día, no una por cada teléfono. No se hace con GitHub Actions porque onepace.net bloquea (403) sus direcciones.
 - La app trae una copia del catálogo, así que funciona sin internet, y descarga la versión nueva desde este repositorio.
 
 ## Seguridad y privacidad

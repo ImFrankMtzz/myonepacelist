@@ -16,7 +16,7 @@ android {
         targetSdk = 37
         versionCode = 1
         versionName = "0.1.0"
-        // Catálogo remoto que regenera la GitHub Action semanal (ver .github/workflows/catalog.yml).
+        // Catálogo remoto: lo regenera a diario tools/catalog/local-sync.ps1 desde una PC (GitHub Actions no puede leer onepace.net).
         buildConfigField(
             "String",
             "CATALOG_URL",
