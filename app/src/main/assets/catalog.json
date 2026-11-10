@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "version": "9d3a2a1373358990",
- "generatedAt": "2026-11-03T18:10:13.213Z",
+ "version": "5fcefbad04b89ff5",
+ "generatedAt": "2026-11-10T02:54:18.992Z",
  "source": "https://onepace.net/es-419/watch",
  "arcs": [
   {
@@ -3431,7 +3431,7 @@
    "unfinished": false,
    "chapters": "431–441",
    "animeEpisodes": "313–325",
-   "durationMin": 148,
+   "durationMin": 150,
    "image": "/_next/static/media/50-backdrop-431-432_Post-Enies_Lobby_01.regions.mkv_snapshot_01.59.595.41cvi066apc02.jpg",
    "unreleased": 0,
    "episodes": [
@@ -3502,12 +3502,16 @@
      "title": "La tanga de la Franky House",
      "description": "Los Sombrero de Paja apenas tuvieron tiempo de maravillarse con sus nuevas recompensas cuando una nueva sorpresa los espera: la revelación de su magnífico nuevo barco. El siguiente paso es traer un carpintero de barcos a bordo de la tripulación, y sólo hay un hombre capaz de serlo.",
      "special": false,
-     "toBeRedone": true,
+     "toBeRedone": false,
      "chapters": "436–437",
      "animeEpisodes": "321–322",
-     "durationMin": 29,
+     "durationMin": 31,
      "image": "/_next/static/media/50-still.1ogvjvpen4q9_.jpg",
-     "sub": null,
+     "sub": {
+      "480": "GD8TQ3dq",
+      "720": "uzz4cwN6",
+      "1080": "7yTAH8Lv"
+     },
      "dub": null,
      "extended": null
     },
