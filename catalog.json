@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "version": "5fcefbad04b89ff5",
- "generatedAt": "2026-11-10T02:54:18.992Z",
+ "version": "65fb54e615384f76",
+ "generatedAt": "2026-11-16T16:47:49.662Z",
  "source": "https://onepace.net/es-419/watch",
  "arcs": [
   {
@@ -5072,7 +5072,7 @@
    "unfinished": false,
    "chapters": "603–653",
    "animeEpisodes": "523–541, 543–573",
-   "durationMin": 779,
+   "durationMin": 783,
    "image": "/_next/static/media/50-backdrop-One_Pace607-608_Fishman_Island_03_720p5636E014.mkv_snapshot_07.20.485.2ooa4uula5sr2.jpg",
    "unreleased": 0,
    "episodes": [
@@ -5120,16 +5120,18 @@
      "id": "fishman-island-03",
      "arc": "fishman-island",
      "part": 3,
-     "title": "¡Llegando a la Isla Gyojin! ¡La Bahía de las Sirenas y Gyoverly Hills!",
+     "title": "Diez mil metros de profundidad",
      "description": "Después del encuentro con un espeluznante barco submarino y con Isla Gyojin a la vista, la tripulación de Luffy es detenida por un grupo de gyojin que cabalgaban sobre reyes marinos. Pero el tiempo es oro, por lo que los Sombrero de Paja intentan una maniobra desesperada.",
      "special": false,
-     "toBeRedone": true,
+     "toBeRedone": false,
      "chapters": "607–608",
      "animeEpisodes": "526–527",
-     "durationMin": 24,
+     "durationMin": 27,
      "image": "/_next/static/media/50-still.3y5w32u39ekhs.jpg",
      "sub": {
-      "720": "LP6EUpgC"
+      "480": "76pa2bJY",
+      "720": "hK5QJsF1",
+      "1080": "FfUjo1TR"
      },
      "dub": null,
      "extended": null
