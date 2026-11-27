@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "version": "65fb54e615384f76",
- "generatedAt": "2026-11-16T16:47:49.662Z",
+ "version": "9b95440a3f3f4a98",
+ "generatedAt": "2026-11-27T00:05:13.118Z",
  "source": "https://onepace.net/es-419/watch",
  "arcs": [
   {
@@ -7796,9 +7796,9 @@
    "unfinished": true,
    "chapters": "909–1057",
    "animeEpisodes": "890–894, 897–906, 908–1028, 1031–1083, 1085",
-   "durationMin": 1873,
+   "durationMin": 1906,
    "image": "/_next/static/media/40-backdrop-One_Pace909-910_Wano_01_1080pF9F0F488.mkv_snapshot_19.56.342.0j8b2gc9y0a-7.jpg",
-   "unreleased": 24,
+   "unreleased": 23,
    "episodes": [
     {
      "id": "wano-01",
@@ -8902,6 +8902,22 @@
      "animeEpisodes": "1032–1034",
      "durationMin": 24,
      "image": "/_next/static/media/50-still.15nb4e33j4glu.jpg",
+     "sub": null,
+     "dub": null,
+     "extended": null
+    },
+    {
+     "id": "wano-63",
+     "arc": "wano",
+     "part": 63,
+     "title": "The Ham",
+     "description": "",
+     "special": false,
+     "toBeRedone": false,
+     "chapters": "1014–1015",
+     "animeEpisodes": "1034–1036",
+     "durationMin": 32,
+     "image": null,
      "sub": null,
      "dub": null,
      "extended": null
